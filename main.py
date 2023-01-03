@@ -45,10 +45,33 @@ def inline(bgm_path,padding):
     os.remove(download_file)
     print(f'audio saved to {mp3_path}')
 
-def importFile(file):
-    with open(file,"rw"):
-        print("Hello")
-    print("import file")
+def importFile(file,path):
+    IMPORT_PADDING_VALUE = 1
+    
+    with open(file,"r") as f:
+        rows = f.readlines()
+        for row in rows:
+            col = row.split(",")
+            if len(col) != 2:
+                print("Error: csv file selected contains errors. most likely a missing ',' Exiting..")
+                sys.exit()
+            url = col[0]
+            name = col[1]
+            
+            download_file = downloadFile(url,path)
+            mp4_audio = AudioSegment.from_file(download_file,format="mp4")
+
+            mp3_path = path_file("mp3",name,path)
+            silence = AudioSegment.silent(duration=IMPORT_PADDING_VALUE*1000)
+            full_track = AudioSegment.empty()
+            full_track += silence + mp4_audio
+            full_track.export(mp3_path,format="mp3")
+            print(f'New music: {name} added to {mp3_path}')
+            
+            os.remove(download_file)
+                
+            
+    print("import complete")
 
 @click.command()
 @click.option('--file',default=None,help="Import music to fire pro via csv file. Example of csv entry would look like \n<YOUTUBE_URL>, <NameOfFile>")
@@ -60,8 +83,9 @@ def run(file,padding_length):
     else:
         BGM_PATH = r"/mnt/c/Program Files (x86)/Steam/steamapps/common/Fire Prowrestling World/BGM"
     
-    if not None:
-        importFile(file)
+    if file is not None:
+        importFile(file,BGM_PATH)
+        sys.exit()
     
     inline(BGM_PATH,padding_length)
     
