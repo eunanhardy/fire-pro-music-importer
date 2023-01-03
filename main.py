@@ -41,6 +41,7 @@ def inline(bgm_path,padding):
     silence = AudioSegment.silent(duration=padding*1000)
     full_track = AudioSegment.empty()
     full_track += silence + mp4_audio
+    full_track = full_track[:45000]
     full_track.export(mp3_path,format="mp3")
 
     os.remove(download_file)
@@ -66,6 +67,7 @@ def importFile(file,path):
             silence = AudioSegment.silent(duration=IMPORT_PADDING_VALUE*1000)
             full_track = AudioSegment.empty()
             full_track += silence + mp4_audio
+            full_track = full_track[:45000]
             full_track.export(mp3_path,format="mp3")
             print(f'New music: {name} added to {mp3_path}')
             
