@@ -32,7 +32,7 @@ def downloadFile(url,path):
 
 def inline(bgm_path,padding):
     url = str(input("Enter The Video URL: \n>>"))
-    input_filename = str(input("Please enter the name of the mp3 file you want to save to bgm folder: \n>>"))
+    input_filename = str(input("Please enter a name to assign the file: \n>>"))
     download_file = downloadFile(url,bgm_path)
     mp4_audio = AudioSegment.from_file(download_file,format="mp4")
 
