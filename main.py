@@ -12,14 +12,15 @@ def is_wsl() -> bool:
 def path_file(ext,filename,root) -> str:
     return os.path.join(root,f'{filename}.{ext}')
 
-def validateGamePath(bgm_path):
+def validateGamePath(bgm_path) -> str:
     if not os.path.isdir(bgm_path):
-        alt_path = str(input("WARNING: We were unable to detect your music folder. Please paste the path in now. \n>>"))
-    if os.path.isdir(alt_path):
-        bgm_path = alt_path
-    else:
-        print("Could not locate direcotry. Exiting... soz")
-        sys.exit()
+        alt_path = str(input("WARNING: We were unable to detect your music folder. Please paste the path in now. \n>> "))
+        if os.path.isdir(alt_path):
+            bgm_path = alt_path
+            return bgm_path
+        else:
+            print("Could not locate direcotry. Exiting... soz")
+            sys.exit()
 def downloadFile(url,path):
     yt_ref = YouTube(url)
     audio_stream = yt_ref.streams.filter(only_audio=True).first()
@@ -32,7 +33,7 @@ def downloadFile(url,path):
 
 def inline(bgm_path,padding):
     url = str(input("Enter The Video URL: \n>>"))
-    input_filename = str(input("Please enter a name to assign the file: \n>>"))
+    input_filename = str(input("Please enter a name to assign the file: \n>> "))
     download_file = downloadFile(url,bgm_path)
     mp4_audio = AudioSegment.from_file(download_file,format="mp4")
 
@@ -83,6 +84,7 @@ def run(file,padding_length):
     else:
         BGM_PATH = r"/mnt/c/Program Files (x86)/Steam/steamapps/common/Fire Prowrestling World/BGM"
     
+    validateGamePath(BGM_PATH)
     if file is not None:
         importFile(file,BGM_PATH)
         sys.exit()
