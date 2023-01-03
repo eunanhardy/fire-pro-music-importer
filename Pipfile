@@ -7,6 +7,7 @@ name = "pypi"
 pytube = "*"
 pytube3 = "*"
 pydub = "*"
+click = "*"
 
 [dev-packages]
 
