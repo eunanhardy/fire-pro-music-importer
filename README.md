@@ -15,7 +15,7 @@ Requirements
 pip install
 ```
 
-## Import Music one song at a time
+## Import one song at a time
 
 ```
 python3 main.py
