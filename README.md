@@ -1,6 +1,6 @@
-# Fire Pro Wrestling Music Importer
+# Fire Pro Wrestling YouTube Music Importer
 
-### This is designed to make it easy to import custom music into fire pro wrestling world.
+### This is designed to make it easy to import custom music from YouTube into fire pro wrestling world.
 
 Requirements
 
