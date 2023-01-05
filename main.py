@@ -14,13 +14,14 @@ def path_file(ext,filename,root) -> str:
 
 def validateGamePath(bgm_path) -> str:
     if not os.path.isdir(bgm_path):
-        alt_path = str(input("WARNING: We were unable to detect your music folder. Please paste the path in now. \n>> "))
+        alt_path = str(input("WARNING: We were unable to detect your music folder. Please paste the path in now. \n>>"))
         if os.path.isdir(alt_path):
             bgm_path = alt_path
             return bgm_path
         else:
             print("Could not locate direcotry. Exiting... soz")
             sys.exit()
+            
 def downloadFile(url,path):
     yt_ref = YouTube(url)
     audio_stream = yt_ref.streams.filter(only_audio=True).first()
@@ -29,11 +30,19 @@ def downloadFile(url,path):
     download_file = audio_stream.download(output_path=path)
     print(f'download {yt_ref.title} - Complete')
     return download_file
-    
 
-def inline(bgm_path,padding):
+def splitTrackByTime(track,start,end):
+
+    if start != None and end != None:
+        return track[end*1000:start*1000]
+    if start != None:
+        return track[start*1000:]
+    
+        
+
+def inline(bgm_path,padding,start,end):
     url = str(input("Enter The Video URL: \n>>"))
-    input_filename = str(input("Please enter a name to assign the file: \n>> "))
+    input_filename = str(input("Please enter a name to assign the file: \n>>"))
     download_file = downloadFile(url,bgm_path)
     mp4_audio = AudioSegment.from_file(download_file,format="mp4")
 
@@ -41,7 +50,12 @@ def inline(bgm_path,padding):
     silence = AudioSegment.silent(duration=padding*1000)
     full_track = AudioSegment.empty()
     full_track += silence + mp4_audio
-    full_track = full_track[:45000]
+    
+    if start or end:
+        full_track = splitTrackByTime(full_track,start,end)
+    
+    if not start and not end:
+        full_track = full_track[:45000]
     full_track.export(mp3_path,format="mp3")
 
     os.remove(download_file)
@@ -79,7 +93,9 @@ def importFile(file,path):
 @click.command()
 @click.option('--file',default=None,help="Import music to fire pro via csv file. Example of csv entry would look like \n<YOUTUBE_URL>, <NameOfFile>")
 @click.option('--padding-length',default=1,help="Standard padding of 1 second of silance to ensure it sounds correct in game. Change to whatever you like,\n\n NOTE: does not apply for imports")
-def run(file,padding_length):
+@click.option('--start',default=None,help="Set the starting point of your track in seconds")
+@click.option('--end',default=None,help="Set the ending point of your track in seconds.")
+def run(file,padding_length,start,end):
     BGM_PATH = ""
     if not is_wsl():
         BGM_PATH = r"C:\\Program Files (x86)\Steam\steamapps\common\Fire Prowrestling World\BGM"
@@ -91,7 +107,7 @@ def run(file,padding_length):
         importFile(file,BGM_PATH)
         sys.exit()
     
-    inline(BGM_PATH,padding_length)
+    inline(BGM_PATH,padding_length,start,end)
     
 
 if __name__ == "__main__":
